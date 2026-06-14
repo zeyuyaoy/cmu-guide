@@ -26,10 +26,8 @@ const contributors = [
 	),
 ];
 const defaultTitle = "cmu.guide";
-const defaultDescription =
-	"Your go-to guide for navigating the Tartan life, academics, and beyond!";
 const resolvedTitle = title?.trim() || defaultTitle;
-const resolvedDescription = description?.trim() || defaultDescription;
+const resolvedDescription = description?.trim();
 
 let currentPath = Astro.url.pathname;
 if (currentPath !== "/" && currentPath.endsWith("/")) {
@@ -215,13 +213,15 @@ const headingList = headings as Heading[];
 		<meta name="msapplication-TileColor" content="#ffffff" />
 		<meta name="msapplication-TileImage" content="/ms-icon-144x144.png" />
 		<meta name="theme-color" content="#ffffff" />
-		<meta name="description" content={resolvedDescription} />
+		{resolvedDescription && <meta name="description" content={resolvedDescription} />}
 		<link rel="canonical" href={pageUrl} />
 
 		<meta property="og:type" content={ogType} />
 		<meta property="og:url" content={pageUrl} />
 		<meta property="og:title" content={resolvedTitle} />
-		<meta property="og:description" content={resolvedDescription} />
+		{resolvedDescription && (
+			<meta property="og:description" content={resolvedDescription} />
+		)}
 		<meta property="og:image" content={socialImageUrl} />
 		<meta property="og:image:width" content="1200" />
 		<meta property="og:image:height" content="630" />
@@ -229,7 +229,9 @@ const headingList = headings as Heading[];
 		<meta name="twitter:card" content={twitterCard} />
 		<meta name="twitter:url" content={pageUrl} />
 		<meta name="twitter:title" content={resolvedTitle} />
-		<meta name="twitter:description" content={resolvedDescription} />
+		{resolvedDescription && (
+			<meta name="twitter:description" content={resolvedDescription} />
+		)}
 		<meta name="twitter:image" content={socialImageUrl} />
 
 		<title>{resolvedTitle}</title>
@@ -270,9 +272,9 @@ const headingList = headings as Heading[];
 						)
 					}
 					{
-						!hideDescription && description && (
+						!hideDescription && resolvedDescription && (
 							<p class="text-xl lg:text-2xl text-zinc-600 dark:text-zinc-400 mb-6 break-words">
-								{description}
+								{resolvedDescription}
 							</p>
 						)
 					}

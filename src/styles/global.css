@@ -4,7 +4,9 @@
 
 @font-face {
 	font-family: "Inter";
-	src: url("../assets/fonts/inter/Inter-Regular.ttf") format("truetype");
+	src:
+		url("../assets/fonts/inter/Inter-Regular.woff2") format("woff2"),
+		url("../assets/fonts/inter/Inter-Regular.ttf") format("truetype");
 	font-style: normal;
 	font-weight: 400;
 	font-display: swap;
@@ -12,7 +14,9 @@
 
 @font-face {
 	font-family: "Inter";
-	src: url("../assets/fonts/inter/Inter-Medium.ttf") format("truetype");
+	src:
+		url("../assets/fonts/inter/Inter-Medium.woff2") format("woff2"),
+		url("../assets/fonts/inter/Inter-Medium.ttf") format("truetype");
 	font-style: normal;
 	font-weight: 500;
 	font-display: swap;
@@ -20,7 +24,9 @@
 
 @font-face {
 	font-family: "Inter";
-	src: url("../assets/fonts/inter/Inter-SemiBold.ttf") format("truetype");
+	src:
+		url("../assets/fonts/inter/Inter-SemiBold.woff2") format("woff2"),
+		url("../assets/fonts/inter/Inter-SemiBold.ttf") format("truetype");
 	font-style: normal;
 	font-weight: 600;
 	font-display: swap;
@@ -28,7 +34,9 @@
 
 @font-face {
 	font-family: "Inter";
-	src: url("../assets/fonts/inter/Inter-Bold.ttf") format("truetype");
+	src:
+		url("../assets/fonts/inter/Inter-Bold.woff2") format("woff2"),
+		url("../assets/fonts/inter/Inter-Bold.ttf") format("truetype");
 	font-style: normal;
 	font-weight: 700;
 	font-display: swap;
@@ -36,7 +44,9 @@
 
 @font-face {
 	font-family: "Inter";
-	src: url("../assets/fonts/inter/Inter-ExtraBold.ttf") format("truetype");
+	src:
+		url("../assets/fonts/inter/Inter-ExtraBold.woff2") format("woff2"),
+		url("../assets/fonts/inter/Inter-ExtraBold.ttf") format("truetype");
 	font-style: normal;
 	font-weight: 800;
 	font-display: swap;
