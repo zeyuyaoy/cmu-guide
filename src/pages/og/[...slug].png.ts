@@ -151,12 +151,12 @@ const buildOgSvg = ({ title, description, category, pathname }: OgProps) => {
 					<stop offset="1" stop-color="#08111f" stop-opacity="0.2" />
 				</linearGradient>
 				<style>
-					.text { font-family: Inter; }
-					.pill { font-family: Inter; font-size: 22px; font-weight: 700; fill: rgba(255,255,255,0.94); letter-spacing: 0; }
-					.title { font-family: Inter; font-size: 78px; font-weight: 800; fill: #ffffff; letter-spacing: 0; }
-					.description { font-family: Inter; font-size: 44px; font-weight: 500; fill: rgba(255,255,255,0.86); letter-spacing: 0; }
-					.footer { font-family: Inter; font-size: 26px; font-weight: 700; fill: rgba(255,255,255,0.92); letter-spacing: 0; }
-					.footer-subtle { font-family: Inter; font-size: 26px; font-weight: 600; fill: rgba(255,255,255,0.74); letter-spacing: 0; }
+					.text { font-family: "Inter", sans-serif; }
+					.pill { font-family: "Inter", sans-serif; font-size: 22px; font-weight: 700; fill: rgba(255,255,255,0.94); letter-spacing: 0; }
+					.title { font-family: "Inter", sans-serif; font-size: 78px; font-weight: 800; fill: #ffffff; letter-spacing: 0; }
+					.description { font-family: "Inter", sans-serif; font-size: 44px; font-weight: 500; fill: rgba(255,255,255,0.86); letter-spacing: 0; }
+					.footer { font-family: "Inter", sans-serif; font-size: 26px; font-weight: 700; fill: rgba(255,255,255,0.92); letter-spacing: 0; }
+					.footer-subtle { font-family: "Inter", sans-serif; font-size: 26px; font-weight: 600; fill: rgba(255,255,255,0.74); letter-spacing: 0; }
 				</style>
 			</defs>
 			<rect width="1200" height="630" fill="url(#shade)" />
