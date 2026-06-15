@@ -5,21 +5,18 @@ import { resolve } from "node:path";
 import sharp from "sharp";
 
 type PageFrontmatter = {
-	title?: string;
-	description?: string;
-	category?: string;
+	title: string;
+	description: string;
+	category: string;
 	sidebar?: {
 		label?: string;
 	};
 };
 
 type PageModule = {
-	frontmatter?: PageFrontmatter;
+	frontmatter: PageFrontmatter;
 };
 
-const defaultTitle = "cmu.guide";
-const defaultDescription =
-	"Your go-to guide for navigating the Tartan life, academics, and beyond!";
 const projectPath = (...segments: string[]) => resolve(process.cwd(), ...segments);
 const backgroundImagePath = projectPath("public", "background.png");
 const interFontPaths = [
@@ -43,17 +40,14 @@ const pages = import.meta.glob<PageModule>("../**/*.{md,mdx}", { eager: true });
 
 const pageData = Object.entries(pages).map(([path, page]) => {
 	const slug = path.replace(/^\.\.\//, "").replace(/\.(md|mdx)$/, "");
-	const frontmatter = page.frontmatter ?? {};
+	const { frontmatter } = page;
 
 	return {
 		slug,
 		props: {
-			title: frontmatter.title?.trim() || defaultTitle,
-			description: frontmatter.description?.trim() || defaultDescription,
-			category:
-				frontmatter.sidebar?.label?.trim() ||
-				frontmatter.category?.trim() ||
-				"Guide",
+			title: frontmatter.title,
+			description: frontmatter.description,
+			category: frontmatter.sidebar?.label || frontmatter.category,
 			pathname: slug === "index" ? "/" : `/${slug}`,
 		},
 	};

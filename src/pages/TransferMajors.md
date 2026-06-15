@@ -6,7 +6,7 @@ order: 3
 title: So You Want to Get Another Major
 description: Document about transfer, addl, and minor requirements
 contributors:
-  - Myrin
+  - name: Myrin
 layout: ../layouts/Layout.astro
 ---
 
