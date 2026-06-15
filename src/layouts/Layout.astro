@@ -228,10 +228,8 @@ const headingList = headings as Heading[];
 		<script is:inline define:vars={{ pagefindEnabled: import.meta.env.PROD }}>
 			if (pagefindEnabled) {
 				window.addEventListener("DOMContentLoaded", async () => {
-					const pagefindPath = ["/pagefind", "pagefind.js"].join("/");
-
 					try {
-						window.pagefind = await import(pagefindPath);
+						window.pagefind = await import("/pagefind/pagefind.js");
 						await window.pagefind.init();
 					} catch (error) {
 						console.error("Failed to load the generated Pagefind index.", error);
