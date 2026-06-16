@@ -50,7 +50,7 @@ export function normalizeSlug(slug: string): string {
 	if (trimmed === "" || trimmed === "index") {
 		return "index";
 	}
-	return trimmed.replace(/\/index$/, "") || "index";
+	return trimmed.replace(/\/index$/, "");
 }
 
 export function hrefForSlug(slug: string): string {
@@ -59,14 +59,16 @@ export function hrefForSlug(slug: string): string {
 }
 
 export function slugFromPathname(pathname: string): string {
-	return normalizeSlug(pathname.split(/[?#]/, 1)[0] ?? pathname);
+	return normalizeSlug(pathname.split(/[?#]/, 1)[0]);
 }
 
 export function getNavigation(): Promise<NavigationModel> {
-	cachedNavigation ??= buildNavigation().catch((error) => {
-		cachedNavigation = undefined;
-		throw error;
-	});
+	cachedNavigation ??= Promise.resolve()
+		.then(buildNavigation)
+		.catch((error) => {
+			cachedNavigation = undefined;
+			throw error;
+		});
 	return cachedNavigation;
 }
 
@@ -91,7 +93,7 @@ export async function getPrevNext(slugOrPath: string): Promise<{
 	};
 }
 
-async function buildNavigation(): Promise<NavigationModel> {
+function buildNavigation(): NavigationModel {
 	const pageBySlug = new Map<string, PageModule>();
 	const pagePathBySlug = new Map<string, string>();
 
@@ -110,19 +112,22 @@ async function buildNavigation(): Promise<NavigationModel> {
 
 	const seenSectionLabels = new Set<string>();
 	const seenConfigSlugs = new Map<string, string>();
-	const listedSlugs = new Set<string>();
 	const sections: NavSection[] = [];
 	const flatItems: NavItem[] = [];
 	const bySlug = new Map<string, NavItem>();
 
 	for (const section of navigationConfig) {
 		if (seenSectionLabels.has(section.label)) {
-			throw new Error(`Duplicate navigation section label "${section.label}".`);
+			throw new Error(
+				`Duplicate navigation section label "${section.label}".`,
+			);
 		}
 		seenSectionLabels.add(section.label);
 
 		if (section.items.length === 0) {
-			throw new Error(`Navigation section "${section.label}" must list at least one page.`);
+			throw new Error(
+				`Navigation section "${section.label}" must list at least one page.`,
+			);
 		}
 
 		const items = section.items.map((configSlug) => {
@@ -134,7 +139,6 @@ async function buildNavigation(): Promise<NavigationModel> {
 				);
 			}
 			seenConfigSlugs.set(slug, section.label);
-			listedSlugs.add(slug);
 
 			const page = pageBySlug.get(slug);
 			if (!page) {
@@ -169,15 +173,20 @@ async function buildNavigation(): Promise<NavigationModel> {
 	}
 
 	const unlistedPages = [...pageBySlug.entries()]
-		.filter(([slug, page]) => !listedSlugs.has(slug) && isVisiblePage(page.frontmatter))
+		.filter(
+			([slug, page]) =>
+				!seenConfigSlugs.has(slug) && isVisiblePage(page.frontmatter),
+		)
 		.map(([slug]) => slug)
 		.sort();
 
 	if (unlistedPages.length > 0) {
 		throw new Error(
-			`Visible pages missing from navigationConfig: ${unlistedPages.join(
-				", ",
-			)}. Add them to src/config/navigation.ts or set nav: false in frontmatter.`,
+			[
+				`Visible pages missing from navigationConfig: ${unlistedPages.join(", ")}.`,
+				"Add them to src/config/navigation.ts or mark them as hidden from navigation in frontmatter.",
+				"Supported hidden-nav fields include nav: false, hideInNav: true, or sidebar.hidden: true.",
+			].join(" "),
 		);
 	}
 
