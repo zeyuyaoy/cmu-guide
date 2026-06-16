@@ -35,6 +35,7 @@ export type NavSection = {
 export type NavigationModel = {
 	sections: NavSection[];
 	flatItems: NavItem[];
+	flatIndexBySlug: Map<string, number>;
 	bySlug: Map<string, NavItem>;
 };
 
@@ -45,8 +46,11 @@ const pages = import.meta.glob<PageModule>("../pages/*.{md,mdx}", {
 let cachedNavigation: Promise<NavigationModel> | undefined;
 
 export function normalizeSlug(slug: string): string {
-	const normalized = slug.replace(/^\/+/, "").replace(/\/+$/, "");
-	return normalized === "" || normalized === "index" ? "index" : normalized;
+	const trimmed = slug.replace(/^\/+/, "").replace(/\/+$/, "");
+	if (trimmed === "" || trimmed === "index") {
+		return "index";
+	}
+	return trimmed.replace(/\/index$/, "") || "index";
 }
 
 export function hrefForSlug(slug: string): string {
@@ -69,14 +73,18 @@ export async function getPrevNext(slugOrPath: string): Promise<{
 }> {
 	const navigation = await getNavigation();
 	const slug = slugFromPathname(slugOrPath);
-	const currentIndex = navigation.flatItems.findIndex((item) => item.slug === slug);
+	const currentIndex = navigation.flatIndexBySlug.get(slug);
+
+	if (currentIndex === undefined) {
+		return {
+			previous: null,
+			next: null,
+		};
+	}
 
 	return {
-		previous: currentIndex > 0 ? navigation.flatItems[currentIndex - 1] : null,
-		next:
-			currentIndex >= 0 && currentIndex < navigation.flatItems.length - 1
-				? navigation.flatItems[currentIndex + 1]
-				: null,
+		previous: navigation.flatItems[currentIndex - 1] ?? null,
+		next: navigation.flatItems[currentIndex + 1] ?? null,
 	};
 }
 
@@ -170,7 +178,11 @@ async function buildNavigation(): Promise<NavigationModel> {
 		);
 	}
 
-	return { sections, flatItems, bySlug };
+	const flatIndexBySlug = new Map(
+		flatItems.map((item, index) => [item.slug, index]),
+	);
+
+	return { sections, flatItems, flatIndexBySlug, bySlug };
 }
 
 function slugFromFilePath(filePath: string): string {
