@@ -1,25 +1,10 @@
 ---
-import { getNavigation } from "@/utils/navigation";
+import { getPrevNext } from "@/utils/navigation";
 import { ArrowLeft, ArrowRight } from "svelte-radix";
 
-// Keep home in sidebar nav, but exclude it from linear previous/next flow
-const navigation = (await getNavigation()).filter((item) => item.href !== "/");
-
-// Remove trailing slash
-let currentPath = Astro.url.pathname;
-if (currentPath !== "/" && currentPath.endsWith("/")) {
-	currentPath = currentPath.slice(0, -1);
-}
-
-// Find the current page index in the flat navigation list
-const currentIndex = navigation.findIndex((item) => item.href === currentPath);
-
-// Get previous and next pages
-const prevPage = currentIndex > 0 ? navigation[currentIndex - 1] : null;
-const nextPage =
-	currentIndex >= 0 && currentIndex < navigation.length - 1
-		? navigation[currentIndex + 1]
-		: null;
+const { previous: prevPage, next: nextPage } = await getPrevNext(
+	Astro.url.pathname,
+);
 ---
 
 {
