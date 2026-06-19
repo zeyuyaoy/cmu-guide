@@ -34,7 +34,7 @@ for (const fontPath of interFontPaths) {
 }
 
 const pages = import.meta.glob<PageModule>("../**/*.{md,mdx}", { eager: true });
-const navigation = await getNavigation();
+const navigation = getNavigation();
 
 const pageData = Object.entries(pages).map(([path, page]) => {
 	const slug = path.replace(/^\.\.\//, "").replace(/\.(md|mdx)$/, "");
