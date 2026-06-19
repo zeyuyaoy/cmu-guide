@@ -1,5 +1,5 @@
 ---
-import { getNavigation } from "@/utils/navigation";
+import { getNavigation, hrefForSlug } from "@/utils/navigation";
 
 let currentPath = Astro.url.pathname;
 if (currentPath !== "/" && currentPath.endsWith("/")) {
@@ -33,10 +33,10 @@ const sections = navigation.sections.filter((section) =>
 					<ul class="space-y-1">
 						<li>
 							<a
-								href={homeItem.href}
+								href={hrefForSlug(homeItem.slug)}
 								class:list={[
 									"flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors",
-									currentPath === homeItem.href
+									currentPath === hrefForSlug(homeItem.slug)
 										? "bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 font-medium"
 										: "text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-zinc-100",
 								]}
@@ -61,10 +61,10 @@ const sections = navigation.sections.filter((section) =>
 								.map((item) => (
 									<li>
 										<a
-											href={item.href}
+											href={hrefForSlug(item.slug)}
 											class:list={[
 												"flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors",
-												currentPath === item.href
+												currentPath === hrefForSlug(item.slug)
 													? "bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 font-medium"
 													: "text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-zinc-100",
 											]}

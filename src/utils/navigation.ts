@@ -15,7 +15,6 @@ export type NavItem = {
 	slug: string;
 	title: string;
 	description?: string;
-	href: string;
 	sectionLabel: string;
 	entry: PageModule;
 };
@@ -125,7 +124,6 @@ function buildNavigation(): NavigationModel {
 
 			const item: NavItem = {
 				slug,
-				href: hrefForSlug(slug),
 				title: frontmatter.title || slug,
 				description: frontmatter.description,
 				sectionLabel: section.label,
