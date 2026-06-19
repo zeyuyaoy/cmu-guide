@@ -27,8 +27,6 @@ export type NavSection = {
 
 export type NavigationModel = {
 	sections: NavSection[];
-	flatItems: NavItem[];
-	flatIndexBySlug: Map<string, number>;
 	bySlug: Map<string, NavItem>;
 };
 
@@ -36,7 +34,7 @@ const pages = import.meta.glob<PageModule>("../pages/*.{md,mdx}", {
 	eager: true,
 });
 
-let cachedNavigation: Promise<NavigationModel> | undefined;
+let cachedNavigation: NavigationModel | undefined;
 
 export function normalizeSlug(slug: string): string {
 	const trimmed = slug.replace(/^\/+/, "").replace(/\/+$/, "");
@@ -55,35 +53,14 @@ export function slugFromPathname(pathname: string): string {
 	return normalizeSlug(pathname.split(/[?#]/, 1)[0]);
 }
 
-export function getNavigation(): Promise<NavigationModel> {
-	cachedNavigation ??= Promise.resolve()
-		.then(buildNavigation)
-		.catch((error) => {
-			cachedNavigation = undefined;
-			throw error;
-		});
-	return cachedNavigation;
-}
-
-export async function getPrevNext(slugOrPath: string): Promise<{
-	previous: NavItem | null;
-	next: NavItem | null;
-}> {
-	const navigation = await getNavigation();
-	const slug = slugFromPathname(slugOrPath);
-	const currentIndex = navigation.flatIndexBySlug.get(slug);
-
-	if (currentIndex === undefined) {
-		return {
-			previous: null,
-			next: null,
-		};
+export function getNavigation(): NavigationModel {
+	try {
+		cachedNavigation ??= buildNavigation();
+		return cachedNavigation;
+	} catch (error) {
+		cachedNavigation = undefined;
+		throw error;
 	}
-
-	return {
-		previous: navigation.flatItems[currentIndex - 1] ?? null,
-		next: navigation.flatItems[currentIndex + 1] ?? null,
-	};
 }
 
 function buildNavigation(): NavigationModel {
@@ -106,7 +83,6 @@ function buildNavigation(): NavigationModel {
 	const seenSectionLabels = new Set<string>();
 	const seenConfigSlugs = new Map<string, string>();
 	const sections: NavSection[] = [];
-	const flatItems: NavItem[] = [];
 	const bySlug = new Map<string, NavItem>();
 
 	for (const section of navigationConfig) {
@@ -156,9 +132,6 @@ function buildNavigation(): NavigationModel {
 				entry: page,
 			};
 			bySlug.set(slug, item);
-			if (!frontmatter.hidePrevNext) {
-				flatItems.push(item);
-			}
 			return item;
 		});
 
@@ -183,11 +156,7 @@ function buildNavigation(): NavigationModel {
 		);
 	}
 
-	const flatIndexBySlug = new Map(
-		flatItems.map((item, index) => [item.slug, index]),
-	);
-
-	return { sections, flatItems, flatIndexBySlug, bySlug };
+	return { sections, bySlug };
 }
 
 function slugFromFilePath(filePath: string): string {
